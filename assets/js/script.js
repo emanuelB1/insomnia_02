@@ -1,72 +1,85 @@
+// Opciones para el efecto de grano en el fondo
 var options = {
-    "animate": true,
-    "patternWidth": 354.9,
-    "patternHeight": 257.9,
-    "grainOpacity": 0.16,
-    "grainDensity": 1.59,
-    "grainWidth": 2.29,
-    "grainHeight": 1
+    "animate": true, // Permite la animación del grano
+    "patternWidth": 354.9, // Ancho del patrón del grano
+    "patternHeight": 257.9, // Alto del patrón del grano
+    "grainOpacity": 0.16, // Opacidad del grano
+    "grainDensity": 1.59, // Densidad del grano
+    "grainWidth": 2.29, // Ancho del grano
+    "grainHeight": 1 // Alto del grano
 };
 
+// Aplicar el efecto de grano al elemento con el id "container"
 grained("#container", options);
 
+// Función para animar el gradiente de fondo
 function moveBackgroundGradient() {
     var container = document.getElementById('container');
     var angle = 0;
 
     function updateGradient() {
-        angle += 1; // Ajusta la velocidad de movimiento aquí
+        angle += 1; // Incrementa el ángulo para la animación del gradiente
         
-        // Ajusta la opacidad de los colores en el gradiente
+        // Ajusta el fondo del contenedor con un gradiente lineal y colores con opacidad
         container.style.background = 'linear-gradient(' + angle + 'deg, rgba(78, 5, 86, 0.5), rgba(12, 118, 14, 0.5), rgba(218, 101, 16, 0.5), rgba(19, 218, 16, 0.5), rgba(239, 216, 23, 0.5))';
     }
 
-    // Iniciar la animación del movimiento del gradiente
-    setInterval(updateGradient, 50); // Ajusta el intervalo de tiempo aquí para controlar la velocidad de movimiento
+    // Iniciar la animación del gradiente de fondo
+    setInterval(updateGradient, 50); // Ajusta el intervalo de tiempo para controlar la velocidad de movimiento
 }
 
-moveBackgroundGradient(); // Iniciar la animación de movimiento del gradiente
+// Llamar a la función para iniciar la animación del gradiente de fondo
+moveBackgroundGradient();
 
+// Crear una nueva instancia de Lenis para algunas animaciones específicas
+const lenis = new Lenis();
 
-const lenis = new Lenis()
-
+// Función para el ciclo de renderizado utilizando requestAnimationFrame
 function raf(time) {
   lenis.raf(time)
   requestAnimationFrame(raf)
 }
 
-requestAnimationFrame(raf)
+// Iniciar el ciclo de renderizado
+requestAnimationFrame(raf);
 
+// Deshabilitar el suavizado de retraso de la animación GSAP
+gsap.ticker.lagSmoothing(0);
 
-
-
-gsap.ticker.lagSmoothing(0)
-
+// Clase principal de la aplicación que controla varias animaciones y efectos
 class App {
     constructor(){
+        // Seleccionar las imágenes de héroe y los textos
         this.heroImages = [...document.querySelectorAll(".hero__images img")];
         this.texts = [...document.querySelectorAll(".text__effect")];
 
+        // Inicializar la aplicación
         this._initialize();
+        // Renderizar la aplicación
         this._render();
+        // Establecer el estado inicial
         this._setInitialState();
+        // Crear la animación de introducción
         this._createIntro();
+        // Crear la animación del héroe
         this._createHero();
+        // Crear la animación del texto
         this._createTextAnimation();
+        // Crear la sección fijada
         this._createPinnedSection();
-
     }
 
+    // Método para inicializar la aplicación
     _initialize(){
-        // Crear una instancia de Lenis
+        // Crear una instancia de Lenis con opciones personalizadas
         this.lenis = new Lenis({
-            // Aquí puedes pasar las opciones según tus necesidades
-            lerp: 0.1
+            lerp: 0.1 // Ajustar el factor de interpolación según sea necesario
         });
-        
     }
 
+    // Método para establecer el estado inicial de la aplicación
     _setInitialState() {
+        // Establecer el estado inicial para varios elementos utilizando GSAP
         gsap.set(".hero__title span, .text__effect p, .fullwidth-image__text", {
             y:32,
             opacity: 0
@@ -74,14 +87,15 @@ class App {
 
         gsap.set(".hero__images img", {
             opacity: 0,
-            y: gsap.utils.random(100, 50)
+            y: gsap.utils.random(100, 50) // Mover las imágenes de héroe aleatoriamente en el eje Y
         });
 
         gsap.set(".fullwidth-image img", {
-            scale: 1.3
+            scale: 1.3 // Escalar las imágenes de ancho completo
         });
     }
 
+    // Método para crear la animación de introducción
     _createIntro() {
         const tl = gsap.timeline();
 
@@ -100,14 +114,12 @@ class App {
             ease: "power3.out",
             duration: 2,
             stagger: 0.01
-
-
         }, 0.5);
     }
 
+    // Método para crear la animación del héroe
     _createHero() {
         const tl = gsap.timeline({
-            
             scrollTrigger: {
                 trigger: ".hero",
                 start: "top top",
@@ -115,15 +127,16 @@ class App {
                 scrub:true,
             }
         });
-    
+
         this.heroImages.forEach(image => {
             tl.to(image, {
                 ease: "none",
-                yPercent: gsap.utils.random(-100, -50)
+                yPercent: gsap.utils.random(-100, -50) // Mover las imágenes de héroe aleatoriamente en el eje Y
             }); 
         }, 0);
     }
 
+    // Método para crear la animación del texto
     _createTextAnimation() {
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -131,12 +144,10 @@ class App {
                 start: "top center",
                 end: "bottom top+=10%",
                 scrub: true
-                
             }
         });
 
         this.texts.forEach((text, index) => {
-
             const overlay = text.querySelector(".text__overlay");
             const content =text.querySelector("p");
 
@@ -148,12 +159,11 @@ class App {
                 ease: "expo.out",
                 duration: 2,
                 delay: () => index * 0.1
-            }, 0)
-
+            }, 0);
         });
-
     }
 
+    // Método para crear la sección fijada
     _createPinnedSection() {
         const tl = gsap.timeline({
             scrollTrigger: {
@@ -161,7 +171,7 @@ class App {
                 start: "top top",
                 end: "+=1500",
                 scrub: true,
-                pin: true
+                pin: true // Fijar la sección mientras se desplaza
             }
         });
 
@@ -178,22 +188,18 @@ class App {
             y: 0,
             opacity: 1
         }, 0);
-
-        
     }
 
-    
-
-    
-
+    // Método para renderizar la aplicación utilizando Lenis en el ciclo de renderizado
     _render(){
-        // Usar Lenis en tu render loop
         this.lenis.raf(performance.now());
         requestAnimationFrame(this._render.bind(this));
     }
 }
 
+// Iniciar la aplicación
 new App();
+
 
 // Obtener el botón por su ID
 const insomniaButton = document.getElementById("insomniaButton");

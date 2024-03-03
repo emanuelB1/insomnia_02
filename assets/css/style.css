@@ -109,6 +109,11 @@ p {
     
 }
 
+.hero img:hover {
+    mix-blend-mode: luminosity;
+    
+}
+
 .hero img:nth-child(1) {
     width: 37.4rem;
     height: 56.1rem;
